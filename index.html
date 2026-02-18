@@ -2,8 +2,19 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEON VERSE: HYPER SNAKE (TOUCH EDITION)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>NEON VERSE: HYPER SNAKE</title>
+    
+    <!-- --- CONFIGURATION PWA / IPAD --- -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Neon Snake">
+    <meta name="theme-color" content="#050505">
+
+    <!-- Icône générée (SVG encodé) pour l'écran d'accueil -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background-color: %23050505;'%3E%3Crect width='512' height='512' fill='%23050505'/%3E%3Cpath d='M150 130 C 150 30, 362 30, 362 130 C 362 230, 150 230, 150 330 C 150 480, 362 480, 362 380' stroke='%2300ffff' stroke-width='50' fill='none' stroke-linecap='round' style='filter: drop-shadow(0 0 25px %2300ffff);'/%3E%3Ccircle cx='362' cy='130' r='15' fill='%23fff' /%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background-color: %23050505;'%3E%3Crect width='512' height='512' fill='%23050505'/%3E%3Cpath d='M150 130 C 150 30, 362 30, 362 130 C 362 230, 150 230, 150 330 C 150 480, 362 480, 362 380' stroke='%2300ffff' stroke-width='50' fill='none' stroke-linecap='round' style='filter: drop-shadow(0 0 25px %2300ffff);'/%3E%3Ccircle cx='362' cy='130' r='15' fill='%23fff' /%3E%3C/svg%3E">
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
 
@@ -17,10 +28,19 @@
             touch-action: none; /* CRUCIAL: Empêche le scroll/zoom sur iPad/Mobile */
             -webkit-user-select: none; /* Safari */
             user-select: none;
+            /* Gestion du safe area pour les iPhone X+ / iPad modernes */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
         }
 
         canvas {
             display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
         }
 
         #ui-layer {
@@ -34,6 +54,9 @@
             flex-direction: column;
             justify-content: space-between;
             padding: 40px;
+            /* Adaptation Safe Area */
+            padding-top: max(40px, env(safe-area-inset-top) + 20px);
+            padding-bottom: max(40px, env(safe-area-inset-bottom) + 20px);
             box-sizing: border-box;
             text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
         }
@@ -68,7 +91,9 @@
         #mobile-controls {
             position: absolute;
             bottom: 40px;
+            bottom: max(40px, env(safe-area-inset-bottom) + 20px);
             right: 40px;
+            right: max(40px, env(safe-area-inset-right) + 20px);
             pointer-events: auto; /* Active les clics */
             z-index: 5;
             display: none; /* Masqué par défaut sur Desktop */
@@ -204,10 +229,28 @@
             margin-top: 20px;
             color: #0ff;
             font-size: 18px;
+            text-align: center;
         }
+        
+        .add-to-home-hint {
+            display: none;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #333;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.5);
+        }
+
         @media (pointer: coarse) {
             .mobile-hint { display: block; }
             h1 { font-size: 12vw; } /* Responsive title */
+            
+            /* Afficher l'astuce seulement si on n'est pas déjà en mode app */
+            @media not all and (display-mode: standalone) {
+                .add-to-home-hint { display: block; }
+            }
         }
     </style>
 </head>
@@ -252,6 +295,10 @@
             <span>🔊 Audio Reactif</span>
             <span>⏱ 60s Chrono</span>
             <span>🩸 Gore</span>
+        </div>
+
+        <div class="add-to-home-hint">
+            Pour installer : Appuyez sur Partager <span style="font-size:1.2em">⎋</span> puis "Sur l'écran d'accueil" <span style="font-size:1.2em">⊞</span>
         </div>
     </div>
 
